@@ -1,0 +1,161 @@
+version: "3.1"
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
+intents:
+- greet
+- deny
+- request_names
+- goodbye
+- affirm
+- mood_great
+- mood_unhappy
+- bot_challenge
+- bmi
+- init
+- dr_booking
+
+
+forms:
+  name_form:
+    required_slots:
+      - first_name
+      - last_name
+  bmi_form:
+    required_slots:
+      - weight
+      - height
+  booking_form:
+    required_slots:
+      - patient_name
+      - dept
+      - doctor_name
+      - time
+
+
+
+slots:
+  first_name:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: name_form
+           requested_slot: first_name
+           
+  last_name:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: name_form
+           requested_slot: last_name
+  weight:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: bmi_form
+           requested_slot: weight
+  height:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: bmi_form
+           requested_slot: height
+
+  patient_name:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: booking_form
+           requested_slot: patient_name
+  dept:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: booking_form
+           requested_slot: dept
+
+
+  doctor_name:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: booking_form
+           requested_slot: doctor_name
+
+  time:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: booking_form
+           requested_slot: time
+
+
+responses:
+  utter_greet:
+  - text: Hey! What can I do for you?
+  utter_cheer_up:
+  - text: 'Here is something to cheer you up:'
+    image: https://i.imgur.com/nGF1K8f.jpg
+  utter_did_that_help:
+  - text: Did that help you?
+  utter_happy:
+  - text: Great, carry on!
+  utter_goodbye:
+  - text: Bye
+  utter_iamabot:
+  - text: I am a bot, powered by Rasa.
+  utter_init:
+  - text: Hii, Welcome to DocAI Bot!!
+
+  utter_ask_first_name:
+  - text: What is your first name?
+  utter_ask_last_name:
+  - text: So {first_name}, what is your last name?
+  utter_ask_weight:
+  - text: What is your weight?
+  utter_ask_height:
+  - text: What is your height?
+  utter_ask_patient_name:
+  - text: Please Confirm your name
+  utter_submit:
+  - text: Ok. Thanks!
+  utter_slots_values:
+  - text: I will remember that your name is {first_name} {last_name}!
+  utter_values:
+  - text: your height is {height} and weight is {weight}
+
+actions:
+- utter_greet
+- utter_slots_values
+- utter_submit
+- utter_values
+- action_bmi
+- utter_init
+- action_booking
+- action_ask_dept
+- action_ask_doctor_name
+- action_ask_time
+
+templates:
+  utter_button_template:
+    buttons:
+      - title: Button 1
+        payload: /button_1
+      - title: Button 2
+        payload: /button_2

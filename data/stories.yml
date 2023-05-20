@@ -1,0 +1,103 @@
+version: "3.1"
+
+stories:
+
+- story: happy path
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_great
+  - action: utter_happy
+
+- story: initial path
+  steps: 
+  - intent: init
+  - action: utter_init
+
+- story: sad path 1
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_unhappy
+  - action: utter_cheer_up
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy
+
+# - story: path 2
+#   steps:
+#   - intent: greet
+#   - action: utter_greet
+#   - intent: dr_booking
+#   - action: action_booking
+
+- story: interactive story 1
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: request_names
+  - action: name_form
+  - active_loop: name_form
+  - slot_was_set:
+    - requested_slot: first_name
+  - slot_was_set:
+    - first_name: vincent
+  - slot_was_set:
+    - requested_slot: last_name
+  - slot_was_set:
+    - last_name: vincent-mcvincent
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_submit
+  - action: utter_slots_values
+
+- story: interactive story 2
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: bmi
+  - action: bmi_form
+  - active_loop: bmi_form
+  - slot_was_set:
+    - requested_slot: weight
+  - slot_was_set:
+    - first_name: 60
+  - slot_was_set:
+    - requested_slot: height
+  - slot_was_set:
+    - last_name: 100
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_submit
+  - action: action_bmi
+
+- story: interactive story 3
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: dr_booking
+  - action: booking_form
+  - active_loop: booking_form
+  - slot_was_set:
+    - requested_slot: patient_name
+  - slot_was_set:
+    - patient_name: basil
+  - slot_was_set:
+    - requested_slot: dept
+  - slot_was_set:
+    - dept: skin
+  - slot_was_set:
+    - requested_slot: doctor_name
+  - slot_was_set:
+    - doctor_name: basil
+  - slot_was_set:
+    - requested_slot: time
+  - slot_was_set:
+    - time: 9 AM
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_submit
+  - action: action_booking
