@@ -1,6 +1,6 @@
 from typing import Any, Text, Dict, List
 import requests
-
+import os
 from rasa_sdk.events import AllSlotsReset
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
@@ -274,10 +274,10 @@ class Booking(Action):
 # # Save PDF to a file
                 pdf.output('appointment.pdf', 'F')
                 
-                message = "You can download your Appointment letter from [Here](C:/Users/basil/OneDrive/Desktop/Project/DocAI/appointment.pdf)"
+                message = "You can download your Appointment letter from [Here]("+os.getcwd()+"\\appointment.pdf)"
 
                 dispatcher.utter_message(text=message)
-                return []
+                return [AllSlotsReset()]
 
 
 # class ShowButtonAction(Action):
