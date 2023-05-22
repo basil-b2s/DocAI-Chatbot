@@ -104,5 +104,11 @@ nlu:
     - give me a time for a doctor appointment
     - is there any doctor available
     - doctor consulting
-    
+
+- intent: health_news
+  examples: |
+    - show me the latest health news
+    - health news?
+    - what are the todays health news ?
+
     

@@ -101,3 +101,10 @@ stories:
   - active_loop: null
   - action: utter_submit
   - action: action_booking
+
+- story: interactive story 4
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: health_news
+  - action: action_news

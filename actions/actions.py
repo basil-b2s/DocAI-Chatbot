@@ -1,5 +1,5 @@
 from typing import Any, Text, Dict, List
-
+import requests
 
 from rasa_sdk.events import AllSlotsReset
 from rasa_sdk import Action, Tracker
@@ -102,6 +102,64 @@ class BodyMassIndexRatio(Action):
             dispatcher.utter_message(text="Please try again")
         return [AllSlotsReset()]
     
+class ActionFetchHealthNews(Action):
+    def name(self) -> Text:
+        return "action_news"
+
+    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        # Perform API call to fetch health-related news in English
+        # Replace <API_KEY> with your actual News API key
+
+        api_key = "2b714a1d073743a48cbd5a267cc846f3"
+        url = f"https://newsapi.org/v2/everything?q=health&language=en&apiKey={api_key}"
+
+        try:
+            response = requests.get(url)
+            news_data = response.json()
+
+            # Extract relevant information from the API response
+            articles = news_data["articles"]
+
+            if articles:
+                carousel_items = []
+                for news_item in articles:
+                    title = news_item["title"]
+                    description = news_item["description"]
+                    news_url = news_item["url"]
+                    image_url = news_item["urlToImage"]
+
+                    # Build the payload for each carousel item
+                    carousel_item = {
+                        "title": title,
+                        "subtitle": description,
+                        "image_url": image_url,
+                        "buttons": [
+                            {
+                                "title": "Read more",
+                                "type": "web_url",
+                                "url": news_url
+                            }
+                        ]
+                    }
+                    carousel_items.append(carousel_item)
+
+                # Send the carousel message
+                dispatcher.utter_message(text="Here are some recent health news and updates:")
+                dispatcher.utter_message(attachment={
+                    "type": "template",
+                    "payload": {
+                        "template_type": "generic",
+                        "elements": carousel_items
+                    }
+                })
+            else:
+                dispatcher.utter_message(text="No health news found at the moment. Please try again later.")
+
+        except Exception as e:
+            # Handle any errors that may occur during the API call
+            dispatcher.utter_message(text="Apologies, I couldn't fetch the health news at the moment. Please try again later.")
+
+        return []
 
     
 class ScheduleBooking(Action):

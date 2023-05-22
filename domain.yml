@@ -14,6 +14,7 @@ intents:
 - bmi
 - init
 - dr_booking
+- health_news
 
 
 forms:
@@ -109,6 +110,13 @@ slots:
 responses:
   utter_greet:
   - text: Hey! What can I do for you?
+    buttons:
+    - title: "Book an appointment"
+      payload: "/dr_booking"
+    - title: "Calculate BMI"
+      payload: "/bmi"
+    - title: "Latest Health News"
+      payload: "/health_news"
   utter_cheer_up:
   - text: 'Here is something to cheer you up:'
     image: https://i.imgur.com/nGF1K8f.jpg
@@ -151,11 +159,12 @@ actions:
 - action_ask_dept
 - action_ask_doctor_name
 - action_ask_time
+- action_news
 
-templates:
-  utter_button_template:
-    buttons:
-      - title: Button 1
-        payload: /button_1
-      - title: Button 2
-        payload: /button_2
+# templates:
+#   utter_button_template:
+#     buttons:
+#       - title: Button 1
+#         payload: /button_1
+#       - title: Button 2
+#         payload: /button_2
