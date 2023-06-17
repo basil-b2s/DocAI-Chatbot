@@ -85,6 +85,10 @@ stories:
   - slot_was_set:
     - patient_name: basil
   - slot_was_set:
+    - requested_slot: patient_email
+  - slot_was_set:
+    - patient_email: basilsaji222@gmail.com
+  - slot_was_set:
     - requested_slot: dept
   - slot_was_set:
     - dept: skin
@@ -92,6 +96,10 @@ stories:
     - requested_slot: doctor_name
   - slot_was_set:
     - doctor_name: basil
+  - slot_was_set:
+    - requested_slot: date
+  - slot_was_set:
+    - date: Today
   - slot_was_set:
     - requested_slot: time
   - slot_was_set:
@@ -108,3 +116,5 @@ stories:
   - action: utter_greet
   - intent: health_news
   - action: action_news
+
+  

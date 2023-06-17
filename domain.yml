@@ -29,8 +29,10 @@ forms:
   booking_form:
     required_slots:
       - patient_name
+      - patient_email
       - dept
       - doctor_name
+      - date
       - time
 
 
@@ -78,6 +80,15 @@ slots:
         conditions:
          - active_loop: booking_form
            requested_slot: patient_name
+
+  patient_email:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: booking_form
+           requested_slot: patient_email
   dept:
     type: text
     influence_conversation: true
@@ -105,6 +116,15 @@ slots:
         conditions:
          - active_loop: booking_form
            requested_slot: time
+  
+  date:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+        conditions:
+         - active_loop: booking_form
+           requested_slot: date
 
 
 responses:
@@ -141,6 +161,8 @@ responses:
   - text: What is your height?
   utter_ask_patient_name:
   - text: Please Confirm your name
+  utter_ask_patient_email:
+  - text: Please Confirm your email
   utter_submit:
   - text: Ok. Thanks!
   utter_slots_values:
@@ -158,6 +180,7 @@ actions:
 - action_booking
 - action_ask_dept
 - action_ask_doctor_name
+- action_ask_date
 - action_ask_time
 - action_news
 

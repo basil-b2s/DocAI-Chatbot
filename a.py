@@ -1,29 +1,52 @@
-# # 2b714a1d073743a48cbd5a267cc846f3
-
+# import json
 # import requests
+# headers = {
+#     "Authorization":"ya29.a0AWY7CkmPFtQcCCwEsPQQi9JszdzVKppXzahZdQDY-3wCTO9S2iuq1N_aaRXWIfODumI4Rd3R3DKy4YAKyQDKu_ki-GWz2Rn3yhRafnSpTxhBhk62ptfExY25pp4I4XhcMSJHDDnzN5xoSdHNkzF2xosXliQRaCgYKASgSARESFQG1tDrprSGjJN0Y9GVvxEBXzWcWXQ0163"
+# }
 
-# api_key = "2b714a1d073743a48cbd5a267cc846f3"
-# url = f"https://newsapi.org/v2/everything?q=health&language=en&apiKey={api_key}"
-# response = requests.get(url)
-# try:
-#     response = requests.get(url)
-#     news_data = response.json()
+# para = {
+#     "name" : "appointment.pdf"
+# }
 
-#     articles = news_data["articles"]
+# files = {
+#     'data':('metadata',json.dumps(para),'application/json;charset=UTF-8'),
+#     'file':open('./appointment.pdf','rb')
+# }
 
-#     if articles:
-#         for news_item in articles:
-#             title = news_item["title"]
-#             description = news_item["description"]
-#             news_url = news_item["url"]
+# r = requests.post("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
+#     headers=headers,
+#     files=files
+# )
 
-#             message = f"{title}\n\n{description}\n\nRead more: {news_url}"
-#             print(message)
-#     else:
-#         print(text="No health news found at the moment. Please try again later.")
+import email
+from email.message import EmailMessage
+import ssl
+import smtplib
 
-# except Exception as e:
-#     print(text="Apologies, I couldn't fetch the health news at the moment. Please try again later.")
+email_sender = "basilsaji2206@gmail.com"
+email_password = "memh hopr ndym pqrz"
 
-import os
-print(os.getcwd()+"\\appointment.pdf")
+
+email_receiver = "basilsaji222@gmail.com"
+
+subject = "This is a test mail"
+
+body = "this is a test mail"
+
+em = EmailMessage()
+em["From"] = email_sender
+em['To'] = email_receiver
+em["subject"] = subject
+em.set_content(body)
+
+
+with open('appointment.pdf', 'rb') as content_file:
+    content = content_file.read()
+    em.add_attachment(content, maintype='application', subtype='pdf', filename='appointment.pdf')
+
+context = ssl.create_default_context()
+
+with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+    smtp.login(email_sender, email_password)
+    smtp.sendmail(email_sender, email_receiver, em.as_string())
+

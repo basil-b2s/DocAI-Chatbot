@@ -5,9 +5,39 @@ from rasa_sdk.events import AllSlotsReset
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 
+import email
+from email.message import EmailMessage
+import ssl
+import smtplib
 
 from fpdf import FPDF
 import datetime
+from datetime import datetime, timedelta
+
+def emailSender(patient_name, patient_email, doctor_name):
+    email_sender = "basilsaji2206@gmail.com"
+    email_password = "memh hopr ndym pqrz"
+
+    subject = "Appointment Recepit - DocAI"
+
+    body = f"Hii {patient_name}, \n Please find the attached Appointment details with {doctor_name} \n\n Thanks & Regards \n DocAI Team"
+
+    em = EmailMessage()
+    em["From"] = email_sender
+    em['To'] = patient_email
+    em["subject"] = subject
+    em.set_content(body)
+
+    with open('appointment.pdf', 'rb') as content_file:
+        content = content_file.read()
+        em.add_attachment(content, maintype='application', subtype='pdf', filename='appointment.pdf')
+
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+        smtp.login(email_sender, email_password)
+        smtp.sendmail(email_sender, patient_email, em.as_string())
+
+
 
 class PDF(FPDF):
     def header(self):
@@ -22,7 +52,7 @@ class PDF(FPDF):
         # Line break
         self.ln(20)
 
-    def appointment_info(self, patient_name, doctor_name, doctor_department, time):
+    def appointment_info(self, patient_name, doctor_name, doctor_department, date, time):
         # Times bold 12
         self.set_font('Times', 'B', 12)
         # Table header
@@ -36,6 +66,9 @@ class PDF(FPDF):
         # Doctor Department
         self.cell(40, 10, 'Doctor Department', 1)
         self.cell(0, 10, doctor_department, 1, 1)
+        # date
+        self.cell(40, 10, 'Appointment Date', 1)
+        self.cell(0, 10, date, 1, 1)
         # Time
         self.cell(40, 10, 'Appointment Time', 1)
         self.cell(0, 10, time, 1, 1)
@@ -214,6 +247,10 @@ class ScheduleBooking(Action):
                     "title": "Dr. Thushar",
                     "payload": "Dr. Thushar",
                     },
+                    {
+                    "title": "Dr. Surabhi",
+                    "payload": "Dr. Surabhi",
+                    },
                 ]
                 dispatcher.utter_message(text=message, buttons=buttons)
                 return []
@@ -253,6 +290,28 @@ class ScheduleBooking(Action):
                 dispatcher.utter_message(text=message, buttons=buttons)
                 return []
 
+class ScheduleBooking(Action):
+
+    def name(self) -> Text:
+        return "action_ask_date"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+                # print(tracker.get_slot("patient_name"))
+                message = "Please choose an appointment date"
+                buttons = [
+                    {
+                    "title": "Today",
+                    "payload": "Today",
+                    },
+                    {
+                    "title": "Tomorrow",
+                    "payload": "Tomorrow",
+                    },
+                ]
+                dispatcher.utter_message(text=message, buttons=buttons)
+                return []
 
 class Booking(Action):
 
@@ -264,17 +323,30 @@ class Booking(Action):
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
                 
                 patient_name = tracker.get_slot("patient_name")
+                patient_email = tracker.get_slot("patient_email")
                 dept = tracker.get_slot("dept")
                 doctor_name = tracker.get_slot("doctor_name")
+                date = tracker.get_slot("date")
                 time = tracker.get_slot("time")
                 pdf = PDF()
                 pdf.add_page()
+                # print(date)
+                presentday = datetime.today()
+                if date == "Today":
+                     date = presentday
+                else:
+                     date = presentday + timedelta(1)
+                date = date.strftime('%d-%m-%Y')
+                # current_time = datetime.datetime.now()
 # # Insert appointment information
-                pdf.appointment_info(patient_name, doctor_name, dept, time)
+                pdf.appointment_info(patient_name, doctor_name, dept, date, time)
 # # Save PDF to a file
                 pdf.output('appointment.pdf', 'F')
-                
-                message = "You can download your Appointment letter from [Here]("+os.getcwd()+"\\appointment.pdf)"
+                # body = f"Please find the attached appointment receipt"
+                emailSender(patient_name, patient_email, doctor_name)
+
+
+                message = f"Hii {patient_name}, \n Soon you will receive an email regarding your appointment details with {doctor_name}, \n\n Thank you"
 
                 dispatcher.utter_message(text=message)
                 return [AllSlotsReset()]
