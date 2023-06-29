@@ -43,67 +43,39 @@ class PDF(FPDF):
     def header(self):
         # Logo
         # self.image('logo.png', 10, 8, 33)
-        # Arial bold 15
+
         self.set_font('Arial', 'B', 15)
-        # Move to the right
+
         self.cell(80)
-        # Title
+
         self.cell(30, 10, 'Appointment Details', 1, 0, 'C')
-        # Line break
+
         self.ln(20)
 
     def appointment_info(self, patient_name, doctor_name, doctor_department, date, time):
-        # Times bold 12
+
         self.set_font('Times', 'B', 12)
-        # Table header
+
         self.cell(40, 10, 'Appointment Details', 0, 1)
-        # Patient Name
+
         self.cell(40, 10, 'Patient Name', 1)
         self.cell(0, 10, patient_name, 1, 1)
-        # Doctor Name
+
         self.cell(40, 10, 'Doctor Name', 1)
         self.cell(0, 10, doctor_name, 1, 1)
-        # Doctor Department
+
         self.cell(40, 10, 'Doctor Department', 1)
         self.cell(0, 10, doctor_department, 1, 1)
-        # date
+
         self.cell(40, 10, 'Appointment Date', 1)
         self.cell(0, 10, date, 1, 1)
-        # Time
+
         self.cell(40, 10, 'Appointment Time', 1)
         self.cell(0, 10, time, 1, 1)
-        # Appointment Time
-        # current_time = datetime.datetime.now()
-        # appointment_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
-        # self.cell(40, 10, 'Appointment Time', 1)
-        # self.cell(0, 10, appointment_time, 1, 1)
-        # Line break
+
         self.ln(20)
 
-# Create PDF object
-# pdf = PDF()
-# pdf.add_page()
-# # Insert appointment information
-# pdf.appointment_info('John Smith', 'Dr. Johnson', 'Cardiology')
-# # Save PDF to a file
-# pdf.output('appointment.pdf', 'F')
 
-# class ActionSayShirtSize(Action):
-
-#     def name(self) -> Text:
-#         return "action_say_shirt_size"
-
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
-#         shirt_size = tracker.get_slot("shirt_size")
-#         print(shirt_size)
-#         if not shirt_size:
-#             dispatcher.utter_message(text="I don't know your shirt size.")
-#         else:
-#             dispatcher.utter_message(text=f"Your shirt size is {shirt_size}!")
-#         return []
 
 class BodyMassIndexRatio(Action):
 
@@ -143,14 +115,14 @@ class ActionFetchHealthNews(Action):
         # Perform API call to fetch health-related news in English
         # Replace <API_KEY> with your actual News API key
 
-        api_key = "2b714a1d073743a48cbd5a267cc846f3"
+        api_key = ""
         url = f"https://newsapi.org/v2/everything?q=health&language=en&apiKey={api_key}"
 
         try:
             response = requests.get(url)
             news_data = response.json()
 
-            # Extract relevant information from the API response
+
             articles = news_data["articles"]
 
             if articles:
@@ -176,7 +148,7 @@ class ActionFetchHealthNews(Action):
                     }
                     carousel_items.append(carousel_item)
 
-                # Send the carousel message
+
                 dispatcher.utter_message(text="Here are some recent health news and updates:")
                 dispatcher.utter_message(attachment={
                     "type": "template",
@@ -189,7 +161,7 @@ class ActionFetchHealthNews(Action):
                 dispatcher.utter_message(text="No health news found at the moment. Please try again later.")
 
         except Exception as e:
-            # Handle any errors that may occur during the API call
+
             dispatcher.utter_message(text="Apologies, I couldn't fetch the health news at the moment. Please try again later.")
 
         return []
@@ -337,12 +309,11 @@ class Booking(Action):
                 else:
                      date = presentday + timedelta(1)
                 date = date.strftime('%d-%m-%Y')
-                # current_time = datetime.datetime.now()
-# # Insert appointment information
+
                 pdf.appointment_info(patient_name, doctor_name, dept, date, time)
 # # Save PDF to a file
                 pdf.output('appointment.pdf', 'F')
-                # body = f"Please find the attached appointment receipt"
+
                 emailSender(patient_name, patient_email, doctor_name)
 
 
@@ -351,15 +322,3 @@ class Booking(Action):
                 dispatcher.utter_message(text=message)
                 return [AllSlotsReset()]
 
-
-# class ShowButtonAction(Action):
-#     def name(self) -> Text:
-#         return "action_booking"
-
-#     def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
-#         message = 'Download From [Here](C:/Users/basil/OneDrive/Desktop/Project/appointment.pdf)'
-#         dispatcher.utter_message(text = message)
-
-
-#         return []
