@@ -15,8 +15,8 @@ import datetime
 from datetime import datetime, timedelta
 
 def emailSender(patient_name, patient_email, doctor_name):
-    email_sender = "basilsaji2206@gmail.com"
-    email_password = "memh hopr ndym pqrz"
+    email_sender = # email id
+    email_password = # include your mail app password
 
     subject = "Appointment Recepit - DocAI"
 
